@@ -45,18 +45,27 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH="/opt/homebrew/opt/qt@5/bin:$PATH"
 ```
 
+You might also need a working Java8 JDK
+```
+brew install openjdk@8
+sudo ln -sfn /usr/local/opt/openjdk@8/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-8.jdk
+export PATH="/usr/local/opt/openjdk@8/bin:$PATH"
+export JAVA_HOME=$(/usr/libexec/java_home -v1.8.0_352)
+```
+
 ## Compilation
 
 ```
-cp omenetpp/configure.user.dist omenetpp/configure.user
+cp omnetpp/configure.user.dist omnetpp/configure.user
 ```
 
-Edit `omenetpp/configure.user` and set the following (or see the install guide to install dependencies for these too)
+Edit `omnetpp/configure.user` and set the following (or see the install guide to install dependencies for these too)
 - WITH_OSG=no
 - WITH_OSGEARTH=no
 
 ```
 cd omnetpp
+source setenv
 ./configure
 make -j4
 cd ..
@@ -76,9 +85,32 @@ cd ..
 
 ```
 cd oversim/simulations
+```
 
+### Run the GUI
+```
+../src/OverSim
+```
+
+### Run without GUI (faster)
+```
 ../src/OverSim -cChordLarge -uCmdenv
 
 ```
 
 See http://www.oversim.org/wiki/OverSimUsage for more details.
+
+### Run through Omnet++ Java GUI
+The Java GUI is not part of the normal build process. It requires Java 8. To get it, download an [Omnet++ archive from releases](https://github.com/omnetpp/omnetpp/releases/tag/omnetpp-5.4.1) (OS and version specific) and copy the `/ide` folder to `omnetpp/ide`. Alternatively, follow instructions at https://github.com/omnetpp/omnetpp/issues/888 to build from source.
+
+Once the IDE is installed, start with
+`omnetpp`
+
+In the IDE, create a workspace, than from the menu "Import" as existing projects the `inet` and then the `oversim` folders.
+
+
+## FAQ
+### GUI error: `Unknown Log format character '<'`
+
+Remove `~./qtenvrc`
+https://stackoverflow.com/questions/61497015/unknown-log-format-character
